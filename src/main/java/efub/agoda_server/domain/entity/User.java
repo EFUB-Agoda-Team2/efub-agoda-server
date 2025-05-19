@@ -4,14 +4,15 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Table(name = "user")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder(toBuilder = true)
 public class User {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
     @Column(nullable = false, unique = true)
@@ -22,4 +23,13 @@ public class User {
 
     @Column(name = "profile_img")
     private String profileImg;
+
+    public void updateProfile(String username, String profileImg) {
+        if (username != null && !username.isBlank()) {
+            this.username = username;
+        }
+        if (profileImg != null && !profileImg.isBlank()) {
+            this.profileImg = profileImg;
+        }
+    }
 }
