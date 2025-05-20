@@ -3,7 +3,7 @@ package efub.agoda_server.auth.service;
 import efub.agoda_server.user.domain.User;
 import efub.agoda_server.user.repository.UserRepository;
 
-import efub.agoda_server.auth.dto.res.res.KakaoMemberInfoResponse;
+import efub.agoda_server.auth.dto.res.KakaoMemberInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
