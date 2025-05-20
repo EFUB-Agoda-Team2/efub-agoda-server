@@ -2,7 +2,7 @@ package efub.agoda_server.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import efub.agoda_server.domain.repository.UserRepository;
+import efub.agoda_server.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

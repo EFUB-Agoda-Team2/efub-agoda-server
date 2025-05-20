@@ -1,4 +1,4 @@
-package efub.agoda_server.domain.entity;
+package efub.agoda_server.stay.domain;
 
 import jakarta.persistence.*;
 import lombok.*;

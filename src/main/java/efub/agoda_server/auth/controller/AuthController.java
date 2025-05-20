@@ -1,4 +1,4 @@
-package efub.agoda_server.controller;
+package efub.agoda_server.auth.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

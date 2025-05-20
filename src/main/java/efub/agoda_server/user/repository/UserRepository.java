@@ -1,6 +1,6 @@
-package efub.agoda_server.domain.repository;
+package efub.agoda_server.user.repository;
 
-import efub.agoda_server.domain.entity.User;
+import efub.agoda_server.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 

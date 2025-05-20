@@ -1,7 +1,7 @@
 package efub.agoda_server.security.oauth2;
 
-import efub.agoda_server.domain.entity.User;
-import efub.agoda_server.service.AuthService;
+import efub.agoda_server.user.domain.User;
+import efub.agoda_server.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;

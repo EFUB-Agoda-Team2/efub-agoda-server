@@ -1,4 +1,4 @@
-package efub.agoda_server.domain.entity;
+package efub.agoda_server.stay.domain;
 
 import efub.agoda_server.converter.TagsConverter;
 import jakarta.persistence.*;
