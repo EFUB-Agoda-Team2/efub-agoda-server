@@ -26,7 +26,8 @@ public class TagsConverter implements AttributeConverter<List<String>, String> {
     @Override
     public List<String> convertToEntityAttribute(String dbData) {
         try {
-            return objectMapper.readValue(dbData, new TypeReference<List<String>>() {});
+            return objectMapper.readValue(dbData, new TypeReference<>() {
+            });
         } catch (IOException e) {
             throw new IllegalArgumentException("Error reading JSON to list", e);
         }
