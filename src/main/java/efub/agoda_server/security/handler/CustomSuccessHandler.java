@@ -1,9 +1,9 @@
 package efub.agoda_server.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import efub.agoda_server.domain.entity.User;
+import efub.agoda_server.user.domain.User;
 import efub.agoda_server.security.oauth2.CustomOAuth2User;
-import efub.agoda_server.service.JwtService;
+import efub.agoda_server.auth.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;

@@ -1,9 +1,9 @@
-package efub.agoda_server.service;
+package efub.agoda_server.auth.service;
 
-import efub.agoda_server.domain.entity.User;
-import efub.agoda_server.domain.repository.UserRepository;
+import efub.agoda_server.user.domain.User;
+import efub.agoda_server.user.repository.UserRepository;
 
-import efub.agoda_server.dto.res.KakaoMemberInfoResponse;
+import efub.agoda_server.auth.dto.res.KakaoMemberInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,6 +1,6 @@
-package efub.agoda_server.service;
+package efub.agoda_server.auth.service;
 
-import efub.agoda_server.domain.entity.User;
+import efub.agoda_server.user.domain.User;
 import efub.agoda_server.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

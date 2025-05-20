@@ -1,4 +1,4 @@
-package efub.agoda_server.dto.res;
+package efub.agoda_server.auth.dto.res;
 
 import java.util.Map;
 

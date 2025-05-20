@@ -3,7 +3,7 @@ package efub.agoda_server.security.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import efub.agoda_server.domain.entity.User;
+import efub.agoda_server.user.domain.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
