@@ -3,10 +3,13 @@ package efub.agoda_server.dto.res;
 import java.util.Map;
 
 public class KakaoMemberInfoResponse {
+
     private final Map<String, Object> attrs;
+
     public KakaoMemberInfoResponse(Map<String, Object> attrs) {
         this.attrs = attrs;
     }
+
     @SuppressWarnings("unchecked")
     public String getEmail() {
         Map<String, Object> a = (Map<String, Object>) attrs.get("kakao_account");
