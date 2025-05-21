@@ -14,6 +14,7 @@ public class RoomSummary {
     private String bed;
     private int roomPrice;
     private int roomSalePrice;
+    private String roomImgUrl;
 
     public static RoomSummary of(Room room){
         return RoomSummary.builder()
@@ -21,6 +22,7 @@ public class RoomSummary {
                 .bed(room.getBed())
                 .roomPrice(room.getPrice())
                 .roomSalePrice(room.getSalePrice())
+                .roomImgUrl(room.getRoomImage())
                 .build();
     }
 }

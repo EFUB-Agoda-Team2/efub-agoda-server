@@ -23,11 +23,9 @@ public class StayResponse {
     private int salePrice;
     private List<String> tags;
     private List<String> stayImgUrls;
-    private String roomImgUrls;
     private List<RoomSummary> rooms;
     private StayReviewSummary review;
 
-    //TODO: 이미지 경로 설정
     public static StayResponse from(Stay stay, List<Room> rooms) {
         List<RoomSummary> roomSummaries = rooms.stream()
                 .map(RoomSummary::of)
@@ -43,7 +41,6 @@ public class StayResponse {
                 .salePrice(stay.getSalePrice())
                 .tags(stay.getTags())
                 .stayImgUrls(List.of())
-                .roomImgUrls("")
                 .rooms(roomSummaries)
                 .review(stayReviewSummary)
                 .build();
