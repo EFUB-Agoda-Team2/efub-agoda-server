@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +26,8 @@ public class StayService {
             throw new CustomException(ErrorCode.PAST_CHECKIN_DATE);
         if(checkIn.isAfter(checkOut) || checkIn.isEqual(checkOut))
             throw new CustomException(ErrorCode.INVALID_CHECKOUT_DATE);
-        Pageable pageable = PageRequest.of(page, 2);    //페이지당 데이터 수 8개 고정
-        Page<Stay> stays = stayRepository.findBySalePriceBetweenAndCity(minPrice, maxPrice, city, pageable);
+        Pageable pageable = PageRequest.of(page, 8);    //페이지당 데이터 수 8개 고정
+        Page<Stay> stays = stayRepository.findBySalePriceBetweenAndAddressContaining(minPrice, maxPrice, city, pageable);
         return StayListResponse.from(city, checkIn, checkOut, stays);
     }
 }

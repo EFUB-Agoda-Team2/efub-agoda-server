@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class StayListResponse {
-    private String region;
+    private String search;
     private LocalDate checkIn;
     private LocalDate checkOut;
     private List<StaySummary> stays;
@@ -33,7 +33,7 @@ public class StayListResponse {
                 .collect(Collectors.toList());
 
         return StayListResponse.builder()
-                .region(city)
+                .search(city)
                 .checkIn(checkIn)
                 .checkOut(checkOut)
                 .stays(staySummarys)
