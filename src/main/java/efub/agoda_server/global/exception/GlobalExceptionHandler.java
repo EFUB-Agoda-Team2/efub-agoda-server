@@ -25,4 +25,22 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorDto, HttpStatusCode.valueOf(e.getErrorCode().getStatus()));
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    //"필드명: 메세지" 형식으로 변환
+    protected ResponseEntity<ErrorDto> handleValidationException(MethodArgumentNotValidException e, HttpServletRequest request) {
+        String errorMessage = e.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .findFirst()
+                .orElse("잘못된 요청입니다.");
+
+        ErrorDto errorDto = new ErrorDto(
+                LocalDateTime.now().toString(),
+                400,
+                "INVALID_INPUT",
+                errorMessage,
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+    }
 }
