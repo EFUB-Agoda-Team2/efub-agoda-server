@@ -12,7 +12,8 @@ public enum ErrorCode {
 
     //stay 관련 에러
     PAST_CHECKIN_DATE(400, "체크인 날짜는 오늘 이후여야 합니다."),
-    INVALID_CHECKOUT_DATE(400, "체크아웃 날짜는 체크인 날짜보다 이후여야 합니다.");
+    INVALID_CHECKOUT_DATE(400, "체크아웃 날짜는 체크인 날짜보다 이후여야 합니다."),
+    STAY_NOT_FOUND(404, "숙박이 존재하지 않습니다.");
 
     private final int status;
     private final String message;
