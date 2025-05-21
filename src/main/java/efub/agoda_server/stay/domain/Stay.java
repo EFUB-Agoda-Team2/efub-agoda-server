@@ -20,6 +20,9 @@ public class Stay {
     private long stId;
 
     @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
     private String city;
 
     @Column(nullable = false)
