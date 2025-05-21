@@ -23,7 +23,7 @@ public class StayService {
     private final StayRepository stayRepository;
 
     @Transactional(readOnly = true)
-    public StayListResponse getStays(String city, int minPrice, int maxPrice, LocalDate checkIn, LocalDate checkOut, int page) {
+    public StayListResponse getAllStays(String city, int minPrice, int maxPrice, LocalDate checkIn, LocalDate checkOut, int page) {
         if(checkIn.isBefore(LocalDate.now()))
             throw new CustomException(ErrorCode.PAST_CHECKIN_DATE);
         if(checkIn.isAfter(checkOut) || checkIn.isEqual(checkOut))

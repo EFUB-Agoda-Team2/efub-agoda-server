@@ -5,10 +5,7 @@ import efub.agoda_server.stay.service.StayService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
@@ -19,12 +16,12 @@ public class StayController {
     private final StayService stayService;
 
     @GetMapping
-    public ResponseEntity<StayListResponse> getStays(@RequestParam("city") String city,
+    public ResponseEntity<StayListResponse> getAllStays(@RequestParam("city") String city,
                                                      @RequestParam(value = "minPrice", defaultValue = "0") int minPrice,
                                                      @RequestParam(value = "maxPrice", defaultValue = "2147483647") int maxPrice,
                                                      @RequestParam("checkIn") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkIn,
                                                      @RequestParam("checkOut") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkOut,
                                                      @RequestParam(value = "page", defaultValue = "0") int page){
-        return ResponseEntity.ok(stayService.getStays(city, minPrice, maxPrice, checkIn, checkOut, page));
+        return ResponseEntity.ok(stayService.getAllStays(city, minPrice, maxPrice, checkIn, checkOut, page));
     }
 }
