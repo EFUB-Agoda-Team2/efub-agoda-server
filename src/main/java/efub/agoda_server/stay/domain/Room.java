@@ -16,7 +16,16 @@ public class Room {
     private Long roomId;
 
     @Column(nullable = false)
-    private String name; // 슈페리어 트윈으로 고정
+    private String name;
+
+    @Column(nullable = false)
+    private String bed;
+
+    @Column(nullable = false)
+    private int price;
+
+    @Column(name = "sale_price", nullable = false)
+    private int salePrice;
 
     @Column(name = "room_image", nullable = false)
     private String roomImage;

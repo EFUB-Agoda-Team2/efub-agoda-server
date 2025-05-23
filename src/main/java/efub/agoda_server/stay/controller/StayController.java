@@ -1,6 +1,7 @@
 package efub.agoda_server.stay.controller;
 
 import efub.agoda_server.stay.dto.response.StayListResponse;
+import efub.agoda_server.stay.dto.response.StayResponse;
 import efub.agoda_server.stay.service.StayService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,5 +24,10 @@ public class StayController {
                                                      @RequestParam("checkOut") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkOut,
                                                      @RequestParam(value = "page", defaultValue = "0") int page){
         return ResponseEntity.ok(stayService.getAllStays(city, minPrice, maxPrice, checkIn, checkOut, page));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<StayResponse> getStay(@PathVariable("id") Long id){
+        return ResponseEntity.ok(stayService.getStay(id));
     }
 }
