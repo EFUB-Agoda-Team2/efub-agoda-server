@@ -2,6 +2,7 @@ package efub.agoda_server.stay.dto.response;
 
 import efub.agoda_server.stay.domain.Room;
 import efub.agoda_server.stay.domain.Stay;
+import efub.agoda_server.stay.domain.StayImage;
 import efub.agoda_server.stay.dto.summary.RoomSummary;
 import efub.agoda_server.stay.dto.summary.StayReviewSummary;
 import lombok.AccessLevel;
@@ -26,9 +27,13 @@ public class StayResponse {
     private List<RoomSummary> rooms;
     private StayReviewSummary review;
 
-    public static StayResponse from(Stay stay, List<Room> rooms) {
+    public static StayResponse from(Stay stay, List<StayImage> stayImages, List<Room> rooms) {
         List<RoomSummary> roomSummaries = rooms.stream()
                 .map(RoomSummary::of)
+                .collect(Collectors.toList());
+
+        List<String> stayImgList = stayImages.stream()
+                .map(stayImage -> stayImage.getStImage())
                 .collect(Collectors.toList());
 
         StayReviewSummary stayReviewSummary = StayReviewSummary.from(stay);
@@ -40,7 +45,7 @@ public class StayResponse {
                 .address(stay.getAddress())
                 .salePrice(stay.getSalePrice())
                 .tags(stay.getTags())
-                .stayImgUrls(List.of())
+                .stayImgUrls(stayImgList)
                 .rooms(roomSummaries)
                 .review(stayReviewSummary)
                 .build();

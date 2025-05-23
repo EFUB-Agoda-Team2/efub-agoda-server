@@ -21,10 +21,9 @@ public class StaySummary {
     private int salePrice;
     private int totalPrice;
     private List<String> tags;
-    private List<String> stayImgUrls;
+    private String mainImageUrl;
 
-    //TODO: 이미지 경로 변경
-    public static StaySummary from(Stay stay, int totalDays){
+    public static StaySummary from(Stay stay, int totalDays, String imgUrl){
         return StaySummary.builder()
                 .id(stay.getStId())
                 .name(stay.getName())
@@ -35,7 +34,7 @@ public class StaySummary {
                 .salePrice(stay.getSalePrice())
                 .totalPrice(stay.getSalePrice() * totalDays)
                 .tags(stay.getTags())
-                .stayImgUrls(List.of())
+                .mainImageUrl(imgUrl)
                 .build();
     }
 }
