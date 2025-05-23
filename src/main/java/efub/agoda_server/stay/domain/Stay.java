@@ -56,4 +56,12 @@ public class Stay {
     @Column(nullable = false, name = "review_cnt")
     @ColumnDefault("0")
     private int reviewCnt;
+
+    public void updateReview(double newAddrRating, double newSaniRating, double newServRating, double newRating) {
+        this.rating = newRating;
+        this.addrRating = newAddrRating;
+        this.saniRating = newSaniRating;
+        this.servRating = newServRating;
+        this.reviewCnt ++;
+    }
 }
