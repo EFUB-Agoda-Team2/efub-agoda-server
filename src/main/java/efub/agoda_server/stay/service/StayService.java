@@ -2,6 +2,7 @@ package efub.agoda_server.stay.service;
 
 import  efub.agoda_server.global.exception.CustomException;
 import efub.agoda_server.global.exception.ErrorCode;
+import efub.agoda_server.review.domain.Review;
 import efub.agoda_server.stay.domain.Room;
 import efub.agoda_server.stay.domain.Stay;
 import efub.agoda_server.stay.domain.StayImage;
@@ -58,6 +59,18 @@ public class StayService {
         return StayResponse.from(stay, stayImages, rooms);
     }
 
+    @Transactional
+    public void updateReviewRating(Review review){
+        Stay searchStay = findByStayId(review.getReservation().getStay().getStId());
+
+        int prevReviewCnt = searchStay.getReviewCnt();
+        double newAddrRating = calculateReviewAvg(searchStay.getAddrRating(), review.getAddrRating(), prevReviewCnt);
+        double newSaniRating = calculateReviewAvg(searchStay.getSaniRating(), review.getSaniRating(), prevReviewCnt);
+        double newServRating = calculateReviewAvg(searchStay.getServRating(), review.getServRating(), prevReviewCnt);
+        double newRating = (newAddrRating + newSaniRating + newServRating) / 3;
+        searchStay.updateReview(newAddrRating, newSaniRating, newServRating, newRating);
+    }
+
     public Stay findByStayId(Long id){
         return stayRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.STAY_NOT_FOUND));
@@ -68,5 +81,9 @@ public class StayService {
             throw new CustomException(ErrorCode.PAST_CHECKIN_DATE);
         if(checkIn.isAfter(checkOut) || checkIn.isEqual(checkOut))
             throw new CustomException(ErrorCode.INVALID_CHECKOUT_DATE);
+    }
+
+    public double calculateReviewAvg(double prevReviewScore, double newReview, int prevReviewCnt){
+        return (prevReviewScore * prevReviewCnt + newReview) / (prevReviewCnt + 1);
     }
 }
