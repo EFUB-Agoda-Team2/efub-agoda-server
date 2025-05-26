@@ -1,6 +1,6 @@
 package efub.agoda_server.stay.domain;
 
-import efub.agoda_server.converter.TagsConverter;
+import efub.agoda_server.global.converter.TagsConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;

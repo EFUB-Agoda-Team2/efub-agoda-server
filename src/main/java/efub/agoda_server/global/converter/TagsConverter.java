@@ -1,4 +1,4 @@
-package efub.agoda_server.converter;
+package efub.agoda_server.global.converter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
