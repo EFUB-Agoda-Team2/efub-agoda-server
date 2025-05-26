@@ -9,15 +9,15 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class StayReviewSummary {
+public class StayReviewRatingSummary {
     private double rating;
     private int reviewCnt;
     private double addrRating;
     private double saniRating;
     private double servRating;
 
-    public static StayReviewSummary from(Stay stay) {
-        return StayReviewSummary.builder()
+    public static StayReviewRatingSummary from(Stay stay) {
+        return StayReviewRatingSummary.builder()
                 .rating(stay.getRating())
                 .reviewCnt(stay.getReviewCnt())
                 .addrRating(stay.getAddrRating())
