@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class S3ImageService {
+public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
@@ -33,15 +33,18 @@ public class S3ImageService {
         objectMetadata.setContentLength(file.getSize());
         objectMetadata.setContentType(file.getContentType());
 
-        try(InputStream inputStream = file.getInputStream()){
-            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
+        try (InputStream inputStream = file.getInputStream()) {
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata));
         } catch (IOException e) {
             throw new CustomException(ErrorCode.FILE_UPLOAD_FAILED);
         }
 
         //aws url 경로 전체 반환
         return amazonS3.getUrl(bucket, fileName).toString();
+    }
+
+    public void deleteFile(String fileName){
+        amazonS3.deleteObject(bucket, fileName);
     }
 
     //확장자 검사
