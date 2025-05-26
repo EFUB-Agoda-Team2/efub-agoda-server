@@ -1,5 +1,7 @@
 package efub.agoda_server.auth.service;
 
+import efub.agoda_server.global.exception.CustomException;
+import efub.agoda_server.global.exception.ErrorCode;
 import efub.agoda_server.user.domain.User;
 import efub.agoda_server.user.repository.UserRepository;
 
@@ -33,6 +35,21 @@ public class AuthService {
                             .build();
                     return userRepository.save(u);
                 });
+    }
+
+    @Transactional
+    public void withdraw(User user) {
+        if (user == null) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
+        }
+        userRepository.delete(user);
+    }
+
+    @Transactional(readOnly = true)
+    public void logout(User user) {
+        if (user == null) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
+        }
     }
 
 }
