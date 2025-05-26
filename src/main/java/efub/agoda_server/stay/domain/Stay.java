@@ -26,6 +26,9 @@ public class Stay {
     private String address;
 
     @Column(nullable = false)
+    private String city;
+
+    @Column(nullable = false)
     private int price;
 
     @Column(nullable = false, name = "sale_price")
@@ -64,4 +67,5 @@ public class Stay {
         this.servRating = newServRating;
         this.reviewCnt ++;
     }
+
 }
