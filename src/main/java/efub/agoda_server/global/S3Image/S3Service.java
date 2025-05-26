@@ -1,7 +1,9 @@
 package efub.agoda_server.global.S3Image;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import efub.agoda_server.global.exception.CustomException;
@@ -15,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,8 +46,32 @@ public class S3Service {
         return amazonS3.getUrl(bucket, fileName).toString();
     }
 
-    public void deleteFile(String fileName){
-        amazonS3.deleteObject(bucket, fileName);
+    //이미지 파일 여러개 저장
+    public List<String> uploadFiles(List<MultipartFile> files, String dirName) {
+        if (files == null || files.isEmpty()) {
+            throw new CustomException(ErrorCode.NO_FILE_PROVIDED);
+        }
+
+        return files.stream()
+                .map(file -> uploadFile(file, dirName))
+                .collect(Collectors.toList());
+    }
+
+    // 이미지 수정으로 인해 기존 이미지 삭제
+    public void deleteFile(String fileUrl) {
+        String splitStr = ".com/";
+        String fileName = fileUrl.substring(fileUrl.lastIndexOf(splitStr) + splitStr.length());
+
+        amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
+    }
+
+    //이미지 여러개 제거
+    public void deleteFiles(List<String> fileUrls){
+        if (fileUrls == null || fileUrls.isEmpty()) {
+            throw new CustomException(ErrorCode.NO_FILE_PROVIDED);
+        }
+
+        fileUrls.forEach(this::deleteFile);
     }
 
     //확장자 검사
