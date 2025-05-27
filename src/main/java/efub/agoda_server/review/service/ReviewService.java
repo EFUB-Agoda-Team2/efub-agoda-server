@@ -33,6 +33,11 @@ public class ReviewService {
     public Long createReview(User user, ReviewCreateRequest request){
         Reservation reservation = resRepository.findById(request.getResId())
                 .orElseThrow(() ->  new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
+
+        if (reviewRepository.existsByReservation(reservation)) {
+            throw new CustomException(ErrorCode.REVIEW_ALREADY_EXISTS);
+        }
+
         Review review = request.toEntity(reservation, user);
         reviewRepository.save(review);
 

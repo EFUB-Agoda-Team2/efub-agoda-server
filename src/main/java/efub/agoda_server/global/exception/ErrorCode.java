@@ -20,6 +20,7 @@ public enum ErrorCode {
     RESERVATION_NOT_FOUND(404, "존재하지 않는 예약입니다."),
 
     // review 관련 에러
+    REVIEW_ALREADY_EXISTS(400, "이미 해당 예약에 대한 리뷰가 존재합니다."),
     REVIEW_NOT_FOUND(404, "리뷰 정보를 찾을 수 없습니다."),
     REVIEW_ACCESS_DENIED(403, "리뷰 접근 권한이 없습니다.");
 
