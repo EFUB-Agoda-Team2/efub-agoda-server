@@ -20,6 +20,7 @@ import efub.agoda_server.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,13 +36,14 @@ public class ReviewService {
     private final S3Service s3Service;
 
     @Transactional
-    public Long createReview(User user, ReviewCreateRequest request){
+    public Long createReview(User user, ReviewCreateRequest request, List<MultipartFile> images){
         Reservation reservation = resRepository.findById(request.getResId())
                 .orElseThrow(() ->  new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
         Review review = request.toEntity(reservation, user);
         reviewRepository.save(review);
 
-        List<ReviewImg> reviewImgs = request.getRevImgUrls().stream()
+        List<String> uploadImageUrls = s3Service.uploadFiles(images, "review");
+        List<ReviewImg> reviewImgs = uploadImageUrls.stream()
                 .map(url -> ReviewImg.builder()
                         .revImage(url)
                         .review(review)

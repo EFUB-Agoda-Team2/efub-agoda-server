@@ -7,11 +7,14 @@ import efub.agoda_server.review.service.ReviewService;
 import efub.agoda_server.user.domain.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/rev")
@@ -21,11 +24,12 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     //리뷰 생성
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createReview(@AuthenticationPrincipal User user,
-                                             @RequestBody @Valid ReviewCreateRequest request){
+                                             @RequestPart("request") @Valid ReviewCreateRequest request,
+                                             @RequestPart("images") List<MultipartFile> images){
         System.out.println(request.getResId());
-        Long revId = reviewService.createReview(user,request);
+        Long revId = reviewService.createReview(user, request, images);
         return ResponseEntity.created(URI.create("/rev/" + revId)).build();
     }
     //리뷰 조회

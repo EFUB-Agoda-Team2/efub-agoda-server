@@ -1,7 +1,5 @@
 package efub.agoda_server.global.S3Image;
 
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -48,8 +46,12 @@ public class S3Service {
 
     //이미지 파일 여러개 저장
     public List<String> uploadFiles(List<MultipartFile> files, String dirName) {
-        if (files == null || files.isEmpty()) {
+        if (files == null) {
             throw new CustomException(ErrorCode.NO_FILE_PROVIDED);
+        }
+        //이미지 업로드 3장으로 제한
+        if(files.size() > 3){
+            throw new CustomException(ErrorCode.IMAGE_COUNT_EXCEEDED);
         }
 
         return files.stream()
