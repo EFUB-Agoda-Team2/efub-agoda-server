@@ -12,8 +12,8 @@ import efub.agoda_server.review.dto.response.ReviewResponse;
 import efub.agoda_server.review.repository.ReviewImgRepository;
 import efub.agoda_server.review.repository.ReviewRepository;
 import efub.agoda_server.stay.domain.Stay;
+import efub.agoda_server.stay.service.StayService;
 import efub.agoda_server.user.domain.User;
-import efub.agoda_server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,11 +27,10 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewImgRepository reviewImgRepository;
     private final ResRepository resRepository;
-    private final UserRepository userRepository;
+    private final StayService stayService;
 
     @Transactional
     public Long createReview(User user, ReviewCreateRequest request){
-        System.out.println(request.getResId());
         Reservation reservation = resRepository.findById(request.getResId())
                 .orElseThrow(() ->  new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
         Review review = request.toEntity(reservation, user);
@@ -44,7 +43,7 @@ public class ReviewService {
                         .build())
                 .toList();
         reviewImgRepository.saveAll(reviewImgs);
-
+        stayService.updateReviewRating(review);
         return review.getRevId();
     }
 
