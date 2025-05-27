@@ -20,13 +20,13 @@ public class StayReviewSummary {
     private List<String> reviewImgUrls;
 
     //TODO: reviewImg repository 생성 후 경로 설정 필요
-    public static StayReviewSummary from(Review review) {
+    public static StayReviewSummary from(Review review, List<String> reviewImgUrls) {
         return StayReviewSummary.builder()
                 .reviewer(review.getUser().getUsername())
                 .score(calculateTotalRating(review))
                 .reviewText(review.getText())
                 .createdAt(review.getCreatedAt().toLocalDate())
-                .reviewImgUrls(List.of())
+                .reviewImgUrls(reviewImgUrls)
                 .build();
     }
 

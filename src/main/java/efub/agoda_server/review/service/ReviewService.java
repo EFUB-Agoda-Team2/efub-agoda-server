@@ -4,6 +4,7 @@ import efub.agoda_server.review.domain.Review;
 import efub.agoda_server.review.repository.ReviewRepository;
 import efub.agoda_server.stay.domain.Stay;
 import efub.agoda_server.stay.dto.response.StayReviewDto;
+import efub.agoda_server.stay.dto.summary.StayReviewSummary;
 import efub.agoda_server.stay.service.StayService;
 import efub.agoda_server.global.exception.CustomException;
 import efub.agoda_server.global.exception.ErrorCode;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -130,6 +132,15 @@ public class ReviewService {
         Stay searchStay = stayService.findByStayId(stayId);
         List<Review> reviews = reviewRepository.findByStay(searchStay);
 
-        return StayReviewDto.from(searchStay, reviews);
+        List<StayReviewSummary> reviewSummaries = reviews.stream()
+                .map(review -> {
+                    List<String> reviewImgUrls = reviewImgRepository.findAllByReview(review).stream()
+                            .map(reviewImg -> reviewImg.getRevImage())
+                            .collect(Collectors.toList());
+                    return StayReviewSummary.from(review, reviewImgUrls);
+                })
+                .collect(Collectors.toList());
+
+        return StayReviewDto.from(searchStay, reviewSummaries);
     }
 }
