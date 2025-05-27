@@ -66,7 +66,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public ReviewResponse updateReview(User user, Long revId, ReviewUpdateRequest request) {
+    public ReviewResponse updateReview(User user, Long revId, ReviewUpdateRequest request, List<MultipartFile> images) {
         Review review = reviewRepository.findById(revId)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
@@ -80,16 +80,9 @@ public class ReviewService {
                 request.getReviewText(),
                 LocalDateTime.now()
         );
-        if (request.getRevImgUrls() != null) {
-            reviewImgRepository.deleteAllByReview(review);
-            List<ReviewImg> newImages = request.getRevImgUrls().stream()
-                    .map(url -> ReviewImg.builder()
-                            .revImage(url)
-                            .review(review)
-                            .build())
-                    .toList();
-            reviewImgRepository.saveAll(newImages);
-        }
+
+        updateReviewImages(review, images);
+
         return buildReviewResponse(review);
     }
 
@@ -146,5 +139,23 @@ public class ReviewService {
                 .collect(Collectors.toList());
 
         return StayReviewDto.from(searchStay, reviewSummaries);
+    }
+
+    private void updateReviewImages(Review review, List<MultipartFile> images){
+        //기존 이미지 삭제
+        s3Service.deleteFiles(reviewImgRepository.findAllByReview(review).stream()
+                .map(reviewImg -> reviewImg.getRevImage())
+                .collect(Collectors.toList()));
+        reviewImgRepository.deleteAllByReview(review);
+
+        //이미지 추가
+        List<String> newImgUrls = s3Service.uploadFiles(images, "review");
+        List<ReviewImg> newImages = newImgUrls.stream()
+                .map(url -> ReviewImg.builder()
+                        .revImage(url)
+                        .review(review)
+                        .build())
+                .toList();
+        reviewImgRepository.saveAll(newImages);
     }
 }

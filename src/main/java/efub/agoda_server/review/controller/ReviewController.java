@@ -42,9 +42,10 @@ public class ReviewController {
     //리뷰 수정
     @PatchMapping("/{revId}")
     public ResponseEntity<ReviewResponse> updateReview(@AuthenticationPrincipal User user,
-                                                      @PathVariable Long revId,
-                                                      @RequestBody ReviewUpdateRequest request){
-        ReviewResponse response = reviewService.updateReview(user,revId,request);
+                                                       @PathVariable Long revId,
+                                                       @RequestBody ReviewUpdateRequest request,
+                                                       @RequestPart("images") List<MultipartFile> images){
+        ReviewResponse response = reviewService.updateReview(user, revId, request, images);
         return ResponseEntity.ok(response);
     }
 
