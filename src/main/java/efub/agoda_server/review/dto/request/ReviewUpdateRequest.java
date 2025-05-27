@@ -17,6 +17,4 @@ public class ReviewUpdateRequest {
     private Integer servRating;
     @JsonProperty("review_txt")
     private String reviewText;
-    @JsonProperty("rev_img_urls")
-    private List<String> revImgUrls;
 }
