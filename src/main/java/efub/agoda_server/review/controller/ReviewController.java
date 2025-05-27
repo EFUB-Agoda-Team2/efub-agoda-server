@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -27,9 +28,9 @@ public class ReviewController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createReview(@AuthenticationPrincipal User user,
                                              @RequestPart("request") @Valid ReviewCreateRequest request,
-                                             @RequestPart("images") List<MultipartFile> images){
+                                             @RequestPart(value = "images", required = false) List<MultipartFile> images){
         System.out.println(request.getResId());
-        Long revId = reviewService.createReview(user, request, images);
+        Long revId = reviewService.createReview(user, request, images == null || images.isEmpty() ? Collections.emptyList() : images);
         return ResponseEntity.created(URI.create("/rev/" + revId)).build();
     }
     //리뷰 조회
@@ -40,13 +41,12 @@ public class ReviewController {
         return ResponseEntity.ok(response);
     }
     //리뷰 수정
-    @PatchMapping("/{revId}")
+    @PatchMapping(value = "/{revId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ReviewResponse> updateReview(@AuthenticationPrincipal User user,
                                                        @PathVariable Long revId,
-                                                       @RequestBody ReviewUpdateRequest request,
-                                                       @RequestPart("images") List<MultipartFile> images){
-        ReviewResponse response = reviewService.updateReview(user, revId, request, images);
+                                                       @RequestPart ReviewUpdateRequest request,
+                                                       @RequestPart(value = "images", required = false) List<MultipartFile> images){
+        ReviewResponse response = reviewService.updateReview(user, revId, request, images == null || images.isEmpty() ? Collections.emptyList() : images);
         return ResponseEntity.ok(response);
     }
-
 }

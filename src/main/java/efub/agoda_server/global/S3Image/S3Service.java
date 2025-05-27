@@ -69,7 +69,7 @@ public class S3Service {
 
     //이미지 여러개 제거
     public void deleteFiles(List<String> fileUrls){
-        if (fileUrls == null || fileUrls.isEmpty()) {
+        if (fileUrls == null) {
             throw new CustomException(ErrorCode.NO_FILE_PROVIDED);
         }
 
