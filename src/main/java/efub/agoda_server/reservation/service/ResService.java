@@ -105,6 +105,17 @@ public class ResService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
+    public List<ReservationListItemResponse> getCompletedUserReservations(User user) {
+        LocalDate today = LocalDate.now();
+        List<Reservation> all = resRepo.findAllByUser(user);
+        List<ReservationListItemResponse> completed = all.stream()
+                .filter(r -> r.getCheckinAt().isBefore(today))  // past
+                .sorted((r1, r2) -> r2.getCheckinAt().compareTo(r1.getCheckinAt()))  // 가까운 과거순
+                .map(this::toDto)
+                .toList();
+        return completed;
+    }
 
     private ReservationListItemResponse toDto(Reservation r) {
         return ReservationListItemResponse.builder()
