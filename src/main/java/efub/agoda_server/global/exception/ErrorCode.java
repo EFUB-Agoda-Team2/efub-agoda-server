@@ -21,7 +21,13 @@ public enum ErrorCode {
 
     // review 관련 에러
     REVIEW_NOT_FOUND(404, "리뷰 정보를 찾을 수 없습니다."),
-    REVIEW_ACCESS_DENIED(403, "리뷰 접근 권한이 없습니다.");
+    REVIEW_ACCESS_DENIED(403, "리뷰 접근 권한이 없습니다."),
+  
+    //image 처리 에러
+    FILE_UPLOAD_FAILED(500, "파일 업로드에 실패했습니다."),
+    INVALID_IMAGE_EXTENSION(400, "지원하지 않는 이미지 형식입니다."),
+    IMAGE_COUNT_EXCEEDED(400, "이미지는 최대 3장까지 업로드 가능합니다."),
+    NO_FILE_PROVIDED(400, "파일이 없습니다.");
 
     private final int status;
     private final String message;
