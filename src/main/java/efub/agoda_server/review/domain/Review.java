@@ -1,6 +1,7 @@
 package efub.agoda_server.review.domain;
 
 import efub.agoda_server.reservation.domain.Reservation;
+import efub.agoda_server.stay.domain.Stay;
 import efub.agoda_server.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -39,6 +40,10 @@ public class Review {
     @OneToOne
     @JoinColumn(name="res_id", nullable = false, unique = true)
     private Reservation reservation;
+
+    @ManyToOne
+    @JoinColumn(name = "stay_id", nullable = false)
+    private Stay stay;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable = false)

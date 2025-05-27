@@ -54,8 +54,8 @@ public class StayService {
     @Transactional(readOnly = true)
     public StayResponse getStay(Long id) {
         Stay stay = findByStayId(id);
-        List<StayImage> stayImages = stayImageRepository.findByStay(stay);
-        List<Room> rooms = roomRepository.findByStay(stay);
+        List<StayImage> stayImages = stayImageRepository.findAllByStay(stay);
+        List<Room> rooms = roomRepository.findAllByStay(stay);
         return StayResponse.from(stay, stayImages, rooms);
     }
 

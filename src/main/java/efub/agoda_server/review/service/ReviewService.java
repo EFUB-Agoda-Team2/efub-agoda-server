@@ -1,18 +1,21 @@
 package efub.agoda_server.review.service;
 
+import efub.agoda_server.global.S3Image.S3Service;
+import efub.agoda_server.review.domain.Review;
+import efub.agoda_server.review.repository.ReviewRepository;
+import efub.agoda_server.stay.domain.Stay;
+import efub.agoda_server.stay.dto.response.StayReviewDto;
+import efub.agoda_server.stay.dto.summary.StayReviewSummary;
+import efub.agoda_server.stay.service.StayService;
 import efub.agoda_server.global.exception.CustomException;
 import efub.agoda_server.global.exception.ErrorCode;
 import efub.agoda_server.reservation.domain.Reservation;
 import efub.agoda_server.reservation.repository.ResRepository;
-import efub.agoda_server.review.domain.Review;
 import efub.agoda_server.review.domain.ReviewImg;
 import efub.agoda_server.review.dto.request.ReviewCreateRequest;
 import efub.agoda_server.review.dto.request.ReviewUpdateRequest;
 import efub.agoda_server.review.dto.response.ReviewResponse;
 import efub.agoda_server.review.repository.ReviewImgRepository;
-import efub.agoda_server.review.repository.ReviewRepository;
-import efub.agoda_server.stay.domain.Stay;
-import efub.agoda_server.stay.service.StayService;
 import efub.agoda_server.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +32,7 @@ public class ReviewService {
     private final ReviewImgRepository reviewImgRepository;
     private final ResRepository resRepository;
     private final StayService stayService;
+    private final S3Service s3Service;
 
     @Transactional
     public Long createReview(User user, ReviewCreateRequest request){
@@ -123,5 +128,21 @@ public class ReviewService {
                 )
                 .build();
     }
-}
 
+    @Transactional(readOnly = true)
+    public StayReviewDto getReviewsByStay(Long stayId) {
+        Stay searchStay = stayService.findByStayId(stayId);
+        List<Review> reviews = reviewRepository.findAllByStay(searchStay);
+
+        List<StayReviewSummary> reviewSummaries = reviews.stream()
+                .map(review -> {
+                    List<String> reviewImgUrls = reviewImgRepository.findAllByReview(review).stream()
+                            .map(reviewImg -> reviewImg.getRevImage())
+                            .collect(Collectors.toList());
+                    return StayReviewSummary.from(review, reviewImgUrls);
+                })
+                .collect(Collectors.toList());
+
+        return StayReviewDto.from(searchStay, reviewSummaries);
+    }
+}
