@@ -1,5 +1,5 @@
 #!/usr/bin/env bashPROJECT_ROOT="/home/ubuntu/efub5-agoda-server"
-JAR_FILE="$PROJECT_ROOT/blog-webapp.jar"
+JAR_FILE="$PROJECT_ROOT/agoda-webapp.jar"
 
 DEPLOY_LOG="$PROJECT_ROOT/deploy.log"
 
