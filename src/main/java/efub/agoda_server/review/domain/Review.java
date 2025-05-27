@@ -30,6 +30,9 @@ public class Review {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
     @Column(columnDefinition = "TEXT")
     private String text;
 
@@ -40,4 +43,12 @@ public class Review {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable = false)
     private User user;
+
+    public void updateAll(int addrRating, int saniRating, int servRating, String reviewText, LocalDateTime updatedAt) {
+        this.addrRating = addrRating;
+        this.saniRating = saniRating;
+        this.servRating = servRating;
+        this.text = reviewText;
+        this.updatedAt = updatedAt;
+    }
 }
