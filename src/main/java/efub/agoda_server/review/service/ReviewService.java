@@ -1,5 +1,6 @@
 package efub.agoda_server.review.service;
 
+import efub.agoda_server.global.S3Image.S3Service;
 import efub.agoda_server.review.domain.Review;
 import efub.agoda_server.review.repository.ReviewRepository;
 import efub.agoda_server.stay.domain.Stay;
@@ -31,6 +32,7 @@ public class ReviewService {
     private final ReviewImgRepository reviewImgRepository;
     private final ResRepository resRepository;
     private final StayService stayService;
+    private final S3Service s3Service;
 
     @Transactional
     public Long createReview(User user, ReviewCreateRequest request){
@@ -130,7 +132,7 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public StayReviewDto getReviewsByStay(Long stayId) {
         Stay searchStay = stayService.findByStayId(stayId);
-        List<Review> reviews = reviewRepository.findByStay(searchStay);
+        List<Review> reviews = reviewRepository.findAllByStay(searchStay);
 
         List<StayReviewSummary> reviewSummaries = reviews.stream()
                 .map(review -> {

@@ -40,6 +40,7 @@ public class ReviewCreateRequest {
                 .updatedAt(LocalDateTime.now())
                 .text(reviewText)
                 .reservation(reservation)
+                .stay(reservation.getStay())
                 .user(user)
                 .build();
     }
