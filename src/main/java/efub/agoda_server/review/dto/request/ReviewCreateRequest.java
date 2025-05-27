@@ -28,9 +28,6 @@ public class ReviewCreateRequest {
     @JsonProperty("review_txt")
     private String reviewText;
 
-    @JsonProperty("revImg_urls")
-    private List<String> revImgUrls;
-
     public Review toEntity(Reservation reservation, User user) {
         return Review.builder()
                 .addrRating(addrRating)
@@ -40,6 +37,7 @@ public class ReviewCreateRequest {
                 .updatedAt(LocalDateTime.now())
                 .text(reviewText)
                 .reservation(reservation)
+                .stay(reservation.getStay())
                 .user(user)
                 .build();
     }
