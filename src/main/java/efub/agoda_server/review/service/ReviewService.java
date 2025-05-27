@@ -20,6 +20,7 @@ import efub.agoda_server.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,13 +36,14 @@ public class ReviewService {
     private final S3Service s3Service;
 
     @Transactional
-    public Long createReview(User user, ReviewCreateRequest request){
+    public Long createReview(User user, ReviewCreateRequest request, List<MultipartFile> images){
         Reservation reservation = resRepository.findById(request.getResId())
                 .orElseThrow(() ->  new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
         Review review = request.toEntity(reservation, user);
         reviewRepository.save(review);
 
-        List<ReviewImg> reviewImgs = request.getRevImgUrls().stream()
+        List<String> uploadImageUrls = s3Service.uploadFiles(images, "review");
+        List<ReviewImg> reviewImgs = uploadImageUrls.stream()
                 .map(url -> ReviewImg.builder()
                         .revImage(url)
                         .review(review)
@@ -64,7 +66,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public ReviewResponse updateReview(User user, Long revId, ReviewUpdateRequest request) {
+    public ReviewResponse updateReview(User user, Long revId, ReviewUpdateRequest request, List<MultipartFile> images) {
         Review review = reviewRepository.findById(revId)
                 .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
@@ -78,16 +80,9 @@ public class ReviewService {
                 request.getReviewText(),
                 LocalDateTime.now()
         );
-        if (request.getRevImgUrls() != null) {
-            reviewImgRepository.deleteAllByReview(review);
-            List<ReviewImg> newImages = request.getRevImgUrls().stream()
-                    .map(url -> ReviewImg.builder()
-                            .revImage(url)
-                            .review(review)
-                            .build())
-                    .toList();
-            reviewImgRepository.saveAll(newImages);
-        }
+
+        updateReviewImages(review, images);
+
         return buildReviewResponse(review);
     }
 
@@ -144,5 +139,23 @@ public class ReviewService {
                 .collect(Collectors.toList());
 
         return StayReviewDto.from(searchStay, reviewSummaries);
+    }
+
+    private void updateReviewImages(Review review, List<MultipartFile> images){
+        //기존 이미지 삭제
+        s3Service.deleteFiles(reviewImgRepository.findAllByReview(review).stream()
+                .map(reviewImg -> reviewImg.getRevImage())
+                .collect(Collectors.toList()));
+        reviewImgRepository.deleteAllByReview(review);
+
+        //이미지 추가
+        List<String> newImgUrls = s3Service.uploadFiles(images, "review");
+        List<ReviewImg> newImages = newImgUrls.stream()
+                .map(url -> ReviewImg.builder()
+                        .revImage(url)
+                        .review(review)
+                        .build())
+                .toList();
+        reviewImgRepository.saveAll(newImages);
     }
 }
