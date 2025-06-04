@@ -7,6 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface StayImageRepository extends JpaRepository<StayImage, Long> {
-    StayImage findFirstByStay(Stay stay);
     List<StayImage> findAllByStay(Stay stay);
 }

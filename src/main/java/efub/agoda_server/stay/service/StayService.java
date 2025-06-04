@@ -40,11 +40,9 @@ public class StayService {
         Page<Stay> stays = stayRepository.findBySalePriceBetweenAndAddressContaining(minPrice, maxPrice, city, pageable);
 
         int totalDays = (int) ChronoUnit.DAYS.between(checkIn, checkOut);   //총 숙박일
-        //TODO: 이미지 불러올 때 n+1 방식 생길 것 같아 추후 리팩토링 필요
         List<StaySummary> staySummaries = stays.getContent().stream()
                 .map(stay -> {
-                    StayImage img = stayImageRepository.findFirstByStay(stay);  //대표 이미지 추가
-                    return StaySummary.from(stay, totalDays, img != null ? img.getStImage() : null);
+                    return StaySummary.from(stay, totalDays);
                 })
                 .collect(Collectors.toList());
 
