@@ -17,7 +17,6 @@ import java.util.Map;
 
 @Component
 public class CustomSuccessHandler implements AuthenticationSuccessHandler {
-
     private final JwtService jwtService;
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -26,30 +25,38 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
     }
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest req,
-                                        HttpServletResponse res,
-                                        Authentication auth) throws IOException {
-
+    public void onAuthenticationSuccess(
+            HttpServletRequest req,
+            HttpServletResponse res,
+            Authentication auth
+    ) throws IOException {
         CustomOAuth2User oAuthUser = (CustomOAuth2User) auth.getPrincipal();
         User user = oAuthUser.getUser();
         Map<String, String> tokens = jwtService.generateTokens(user);
 
         Map<String, Object> userJson = new HashMap<>();
-        userJson.put("id",          user.getUserId());
-        userJson.put("email",       user.getEmail());
-        userJson.put("username",    user.getUsername());
+        userJson.put("id",       user.getUserId());
+        userJson.put("email",    user.getEmail());
+        userJson.put("username", user.getUsername());
         userJson.put("profile_img", user.getProfileImg());
 
         Map<String, Object> body = new HashMap<>();
-        body.put("token_type",     "Bearer");
-        body.put("access_token",   tokens.get("access_token"));
-        body.put("refresh_token",  tokens.get("refresh_token"));
-        body.put("expires_in",     3600);
-        body.put("issued_at",      OffsetDateTime.now().toString());
-        body.put("user",           userJson);
+        body.put("token_type",               "Bearer");
+        body.put("access_token",             tokens.get("access_token"));
+        body.put("refresh_token",            tokens.get("refresh_token"));
+        body.put("expires_in",               3600);
+        body.put("refresh_token_expires_in", 604800);
+        body.put("issued_at",                OffsetDateTime.now().toString());
+        body.put("user",                     userJson);
 
-        res.setContentType("application/json;charset=UTF-8");
-        res.setStatus(HttpServletResponse.SC_OK);
-        res.getWriter().write(mapper.writeValueAsString(body));
+        res.setContentType("text/html;charset=UTF-8");
+        String json = mapper.writeValueAsString(body);
+        String script =
+                "<script>" +
+                        "window.opener.postMessage(" + json + ", 'http://localhost:5173');" +
+                        "window.close();" +
+                        "</script>";
+        res.getWriter().write(script);
+
     }
 }
