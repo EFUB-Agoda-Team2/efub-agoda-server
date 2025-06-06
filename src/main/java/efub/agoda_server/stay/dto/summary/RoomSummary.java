@@ -10,6 +10,7 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class RoomSummary {
+    private Long id;
     private String name;
     private String bed;
     private int roomPrice;
@@ -18,6 +19,7 @@ public class RoomSummary {
 
     public static RoomSummary of(Room room){
         return RoomSummary.builder()
+                .id(room.getRoomId())
                 .name(room.getName())
                 .bed(room.getBed())
                 .roomPrice(room.getPrice())

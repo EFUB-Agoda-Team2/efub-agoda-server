@@ -40,9 +40,9 @@ public class ResService {
         LocalDate checkin = LocalDate.parse(req.getCheckin_at());
         LocalDate checkout = LocalDate.parse(req.getCheckout_at());
 
-        if (checkin.isBefore(LocalDate.now())) {
-            throw new CustomException(ErrorCode.PAST_CHECKIN_DATE);
-        }
+//        if (checkin.isBefore(LocalDate.now())) {
+//            throw new CustomException(ErrorCode.PAST_CHECKIN_DATE);
+//        }
 
         if (!checkout.isAfter(checkin)) {
             throw new CustomException(ErrorCode.INVALID_CHECKOUT_DATE);
