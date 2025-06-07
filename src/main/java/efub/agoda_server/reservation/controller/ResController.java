@@ -1,7 +1,7 @@
 package efub.agoda_server.reservation.controller;
 
 import efub.agoda_server.reservation.dto.req.ReservationCreateRequest;
-import efub.agoda_server.reservation.dto.res.ReservationListItemResponse;
+import efub.agoda_server.reservation.dto.res.CompletedReservListResponse;
 import efub.agoda_server.reservation.dto.res.ReservationListResponse;
 import efub.agoda_server.reservation.dto.res.ReservationResponse;
 import efub.agoda_server.reservation.service.ResService;
@@ -37,9 +37,9 @@ public class ResController {
     }
 
     @GetMapping("/rev")
-    public ResponseEntity<List<ReservationListItemResponse>> getCompletedReservations(
+    public ResponseEntity<List<CompletedReservListResponse>> getCompletedReservations(
             @AuthenticationPrincipal User user) {
-        List<ReservationListItemResponse> res = resService.getCompletedUserReservations(user);
+        List<CompletedReservListResponse> res = resService.getCompletedUserReservations(user);
         return ResponseEntity.ok(res);
     }
 }
