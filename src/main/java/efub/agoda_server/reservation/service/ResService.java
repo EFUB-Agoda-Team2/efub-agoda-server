@@ -4,10 +4,12 @@ import efub.agoda_server.global.exception.CustomException;
 import efub.agoda_server.global.exception.ErrorCode;
 import efub.agoda_server.reservation.domain.Reservation;
 import efub.agoda_server.reservation.dto.req.ReservationCreateRequest;
+import efub.agoda_server.reservation.dto.res.CompletedReservListResponse;
 import efub.agoda_server.reservation.dto.res.ReservationListItemResponse;
 import efub.agoda_server.reservation.dto.res.ReservationListResponse;
 import efub.agoda_server.reservation.dto.res.ReservationResponse;
 import efub.agoda_server.reservation.repository.ResRepository;
+import efub.agoda_server.review.repository.ReviewRepository;    // 새로 추가
 import efub.agoda_server.stay.domain.Room;
 import efub.agoda_server.stay.domain.Stay;
 import efub.agoda_server.stay.repository.RoomRepository;
@@ -28,6 +30,7 @@ public class ResService {
     private final StayRepository stayRepo;
     private final RoomRepository roomRepo;
     private final ResRepository resRepo;
+    private final ReviewRepository reviewRepo;
 
     @Transactional
     public ReservationResponse createReservation(User user, ReservationCreateRequest req) {
@@ -39,10 +42,6 @@ public class ResService {
 
         LocalDate checkin = LocalDate.parse(req.getCheckin_at());
         LocalDate checkout = LocalDate.parse(req.getCheckout_at());
-
-//        if (checkin.isBefore(LocalDate.now())) {
-//            throw new CustomException(ErrorCode.PAST_CHECKIN_DATE);
-//        }
 
         if (!checkout.isAfter(checkin)) {
             throw new CustomException(ErrorCode.INVALID_CHECKOUT_DATE);
@@ -88,14 +87,14 @@ public class ResService {
         List<Reservation> all = resRepo.findAllByUser(user);
 
         List<ReservationListItemResponse> upcoming = all.stream()
-                .filter(r -> !r.getCheckinAt().isBefore(today))  // today or future
-                .sorted((r1, r2) -> r1.getCheckinAt().compareTo(r2.getCheckinAt()))  // 가까운 미래순
+                .filter(r -> !r.getCheckinAt().isBefore(today))
+                .sorted((r1, r2) -> r1.getCheckinAt().compareTo(r2.getCheckinAt()))
                 .map(this::toDto)
                 .toList();
 
         List<ReservationListItemResponse> completed = all.stream()
-                .filter(r -> r.getCheckinAt().isBefore(today))  // past
-                .sorted((r1, r2) -> r2.getCheckinAt().compareTo(r1.getCheckinAt()))  // 가까운 과거순
+                .filter(r -> r.getCheckinAt().isBefore(today))
+                .sorted((r1, r2) -> r2.getCheckinAt().compareTo(r1.getCheckinAt()))
                 .map(this::toDto)
                 .toList();
 
@@ -106,15 +105,13 @@ public class ResService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReservationListItemResponse> getCompletedUserReservations(User user) {
+    public List<CompletedReservListResponse> getCompletedUserReservations(User user) {
         LocalDate today = LocalDate.now();
-        List<Reservation> all = resRepo.findAllByUser(user);
-        List<ReservationListItemResponse> completed = all.stream()
-                .filter(r -> r.getCheckinAt().isBefore(today))  // past
-                .sorted((r1, r2) -> r2.getCheckinAt().compareTo(r1.getCheckinAt()))  // 가까운 과거순
-                .map(this::toDto)
+        return resRepo.findAllByUser(user).stream()
+                .filter(r -> r.getCheckinAt().isBefore(today))
+                .sorted((r1, r2) -> r2.getCheckinAt().compareTo(r1.getCheckinAt()))
+                .map(this::toCompletedDto)
                 .toList();
-        return completed;
     }
 
     private ReservationListItemResponse toDto(Reservation r) {
@@ -127,4 +124,19 @@ public class ResService {
                 .check_out(r.getCheckoutAt().toString())
                 .build();
     }
+
+    private CompletedReservListResponse toCompletedDto(Reservation r) {
+        boolean hasReview = reviewRepo.existsByReservation(r);
+        return CompletedReservListResponse.builder()
+                .res_id(r.getResId())
+                .st_id(r.getStay().getStId())
+                .st_img(r.getStay().getMainImageUrl())
+                .st_name(r.getStay().getName())
+                .st_city(r.getStay().getCity())
+                .check_in(r.getCheckinAt().toString())
+                .check_out(r.getCheckoutAt().toString())
+                .rev(hasReview)
+                .build();
+    }
+
 }
