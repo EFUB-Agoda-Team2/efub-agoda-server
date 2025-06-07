@@ -55,7 +55,7 @@ public class ReviewService {
                         .build())
                 .toList();
         reviewImgRepository.saveAll(reviewImgs);
-        stayService.updateReviewRating(review);
+        stayService.updateRatingForNewReview(review);
         return review.getRevId();
     }
 
@@ -78,6 +78,7 @@ public class ReviewService {
         if (!review.getUser().getUserId().equals(user.getUserId())) {
             throw new CustomException(ErrorCode.REVIEW_ACCESS_DENIED);
         }
+        Review oldReview = Review.copyRatingsFrom(review);
         review.updateAll(
                 request.getAddrRating(),
                 request.getSaniRating(),
@@ -86,6 +87,7 @@ public class ReviewService {
                 LocalDateTime.now()
         );
 
+        stayService.updateRatingForEditReview(oldReview, review);
         updateReviewImages(review, images);
 
         return buildReviewResponse(review);

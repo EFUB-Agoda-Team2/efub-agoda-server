@@ -71,4 +71,10 @@ public class Stay {
         this.reviewCnt ++;
     }
 
+    public void updateReviewAfterEdit(double newAddrRating, double newSaniRating, double newServRating, double newRating) {
+        this.rating = newRating;
+        this.addrRating = newAddrRating;
+        this.saniRating = newSaniRating;
+        this.servRating = newServRating;
+    }
 }
