@@ -16,7 +16,9 @@ public class ReviewResponse {
     public static class ReviewDto {
         private Long revId;
         private Long resId;
-        private Double avgRating;
+        private Integer addrRating;
+        private Integer saniRating;
+        private Integer servRating;
         private String createdAt;
         private String updatedAt;
         private String reviewTxt;

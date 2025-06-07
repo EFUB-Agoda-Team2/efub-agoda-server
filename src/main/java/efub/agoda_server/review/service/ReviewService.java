@@ -99,10 +99,6 @@ public class ReviewService {
                 .map(ReviewImg::getRevImage)
                 .toList();
 
-        double avgRating = (review.getAddrRating() +
-                review.getSaniRating() +
-                review.getServRating()) / 3.0;
-
         Reservation reservation = review.getReservation();
         Stay stay = reservation.getStay();
 
@@ -111,7 +107,9 @@ public class ReviewService {
                         ReviewResponse.ReviewDto.builder()
                                 .revId(review.getRevId())
                                 .resId(reservation.getResId())
-                                .avgRating(avgRating)
+                                .addrRating(review.getAddrRating())
+                                .saniRating(review.getSaniRating())
+                                .servRating(review.getServRating())
                                 .createdAt(review.getCreatedAt().toString())
                                 .updatedAt(review.getUpdatedAt().toString())
                                 .reviewTxt(review.getText())
