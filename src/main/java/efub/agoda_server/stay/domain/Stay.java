@@ -60,6 +60,9 @@ public class Stay {
     @ColumnDefault("0")
     private int reviewCnt;
 
+    @Column(name = "main_image")
+    private String mainImageUrl;
+
     public void updateReview(double newAddrRating, double newSaniRating, double newServRating, double newRating) {
         this.rating = newRating;
         this.addrRating = newAddrRating;
@@ -68,4 +71,10 @@ public class Stay {
         this.reviewCnt ++;
     }
 
+    public void updateReviewAfterEdit(double newAddrRating, double newSaniRating, double newServRating, double newRating) {
+        this.rating = newRating;
+        this.addrRating = newAddrRating;
+        this.saniRating = newSaniRating;
+        this.servRating = newServRating;
+    }
 }

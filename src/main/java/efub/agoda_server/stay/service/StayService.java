@@ -40,11 +40,9 @@ public class StayService {
         Page<Stay> stays = stayRepository.findBySalePriceBetweenAndAddressContaining(minPrice, maxPrice, city, pageable);
 
         int totalDays = (int) ChronoUnit.DAYS.between(checkIn, checkOut);   //총 숙박일
-        //TODO: 이미지 불러올 때 n+1 방식 생길 것 같아 추후 리팩토링 필요
         List<StaySummary> staySummaries = stays.getContent().stream()
                 .map(stay -> {
-                    StayImage img = stayImageRepository.findFirstByStay(stay);  //대표 이미지 추가
-                    return StaySummary.from(stay, totalDays, img != null ? img.getStImage() : null);
+                    return StaySummary.from(stay, totalDays);
                 })
                 .collect(Collectors.toList());
 
@@ -60,15 +58,28 @@ public class StayService {
     }
 
     @Transactional
-    public void updateReviewRating(Review review){
+    public void updateRatingForNewReview(Review review){
         Stay searchStay = findByStayId(review.getReservation().getStay().getStId());
-
         int prevReviewCnt = searchStay.getReviewCnt();
+
         double newAddrRating = calculateReviewAvg(searchStay.getAddrRating(), review.getAddrRating(), prevReviewCnt);
         double newSaniRating = calculateReviewAvg(searchStay.getSaniRating(), review.getSaniRating(), prevReviewCnt);
         double newServRating = calculateReviewAvg(searchStay.getServRating(), review.getServRating(), prevReviewCnt);
         double newRating = (newAddrRating + newSaniRating + newServRating) / 3;
         searchStay.updateReview(newAddrRating, newSaniRating, newServRating, newRating);
+    }
+
+    @Transactional
+    public void updateRatingForEditReview(Review oldReview, Review updatedReview){
+        Stay searchStay = findByStayId(updatedReview.getReservation().getStay().getStId());
+        int reviewCnt = searchStay.getReviewCnt();
+
+        double newAddrRating = recalculateAvgAfterEdit(searchStay.getAddrRating(), oldReview.getAddrRating(), updatedReview.getAddrRating(), reviewCnt);
+        double newSaniRating = recalculateAvgAfterEdit(searchStay.getSaniRating(), oldReview.getSaniRating(), updatedReview.getSaniRating(), reviewCnt);
+        double newServRating = recalculateAvgAfterEdit(searchStay.getServRating(), oldReview.getServRating(), updatedReview.getServRating(), reviewCnt);
+        double newRating = (newAddrRating + newSaniRating + newServRating) / 3;
+
+        searchStay.updateReviewAfterEdit(newAddrRating, newSaniRating, newServRating, newRating);
     }
 
     public Stay findByStayId(Long id){
@@ -83,7 +94,13 @@ public class StayService {
             throw new CustomException(ErrorCode.INVALID_CHECKOUT_DATE);
     }
 
-    public double calculateReviewAvg(double prevReviewScore, double newReview, int prevReviewCnt){
-        return (prevReviewScore * prevReviewCnt + newReview) / (prevReviewCnt + 1);
+    public double calculateReviewAvg(double prevAvg, double newValue, int prevCnt){
+        return (prevAvg * prevCnt + newValue) / (prevCnt + 1);
+    }
+
+    public double recalculateAvgAfterEdit(double oldAvg, double oldValue, double newValue, int count) {
+        if (count == 0)
+            return newValue; // 0으로 나누는 경우 방지
+        return (oldAvg * count - oldValue + newValue) / count;
     }
 }

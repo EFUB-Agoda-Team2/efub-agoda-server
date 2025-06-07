@@ -23,7 +23,7 @@ public class StaySummary {
     private List<String> tags;
     private String mainImageUrl;
 
-    public static StaySummary from(Stay stay, int totalDays, String imgUrl){
+    public static StaySummary from(Stay stay, int totalDays){
         return StaySummary.builder()
                 .id(stay.getStId())
                 .name(stay.getName())
@@ -34,7 +34,7 @@ public class StaySummary {
                 .salePrice(stay.getSalePrice())
                 .totalPrice(stay.getSalePrice() * totalDays)
                 .tags(stay.getTags())
-                .mainImageUrl(imgUrl)
+                .mainImageUrl(stay.getMainImageUrl())
                 .build();
     }
 }

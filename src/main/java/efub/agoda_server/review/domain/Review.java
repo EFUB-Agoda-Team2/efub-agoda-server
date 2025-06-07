@@ -56,4 +56,21 @@ public class Review {
         this.text = reviewText;
         this.updatedAt = updatedAt;
     }
+
+    //review 수정 시 rating 복사
+    public static Review copyRatingsFrom(Review review) {
+        return new Review(
+                review.getAddrRating(),
+                review.getSaniRating(),
+                review.getServRating(),
+                review.getReservation() // stay 정보용
+        );
+    }
+
+    public Review(int addrRating, int saniRating, int servRating, Reservation reservation) {
+        this.addrRating = addrRating;
+        this.saniRating = saniRating;
+        this.servRating = servRating;
+        this.reservation = reservation;
+    }
 }
