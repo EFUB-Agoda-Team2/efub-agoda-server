@@ -14,4 +14,5 @@ public class CompletedReservListResponse {
     private String check_in;
     private String check_out;
     private Boolean rev;
+    private Long rev_id;
 }

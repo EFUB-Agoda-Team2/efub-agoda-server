@@ -9,6 +9,7 @@ import efub.agoda_server.reservation.dto.res.ReservationListItemResponse;
 import efub.agoda_server.reservation.dto.res.ReservationListResponse;
 import efub.agoda_server.reservation.dto.res.ReservationResponse;
 import efub.agoda_server.reservation.repository.ResRepository;
+import efub.agoda_server.review.domain.Review;
 import efub.agoda_server.review.repository.ReviewRepository;    // 새로 추가
 import efub.agoda_server.stay.domain.Room;
 import efub.agoda_server.stay.domain.Stay;
@@ -126,7 +127,10 @@ public class ResService {
     }
 
     private CompletedReservListResponse toCompletedDto(Reservation r) {
-        boolean hasReview = reviewRepo.existsByReservation(r);
+        Review review = reviewRepo.findByReservation(r);
+        boolean hasReview = review != null;
+        Long revId = hasReview ? review.getRevId() : null;
+
         return CompletedReservListResponse.builder()
                 .res_id(r.getResId())
                 .st_id(r.getStay().getStId())
@@ -136,6 +140,7 @@ public class ResService {
                 .check_in(r.getCheckinAt().toString())
                 .check_out(r.getCheckoutAt().toString())
                 .rev(hasReview)
+                .rev_id(revId)
                 .build();
     }
 

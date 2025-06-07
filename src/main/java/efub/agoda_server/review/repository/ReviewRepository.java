@@ -10,4 +10,5 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     boolean existsByReservation(Reservation reservation);
     List<Review> findAllByStay(Stay stay);
+    Review findByReservation(Reservation reservation);
 }
