@@ -44,7 +44,7 @@ public class ReviewController {
     @PatchMapping(value = "/{revId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ReviewResponse> updateReview(@AuthenticationPrincipal User user,
                                                        @PathVariable Long revId,
-                                                       @RequestPart ReviewUpdateRequest request,
+                                                       @RequestPart("request") @Valid ReviewUpdateRequest request,
                                                        @RequestPart(value = "images", required = false) List<MultipartFile> images){
         ReviewResponse response = reviewService.updateReview(user, revId, request, images == null || images.isEmpty() ? Collections.emptyList() : images);
         return ResponseEntity.ok(response);
