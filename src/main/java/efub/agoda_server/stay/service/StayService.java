@@ -1,11 +1,12 @@
 package efub.agoda_server.stay.service;
 
-import  efub.agoda_server.global.exception.CustomException;
+import efub.agoda_server.global.exception.CustomException;
 import efub.agoda_server.global.exception.ErrorCode;
 import efub.agoda_server.review.domain.Review;
 import efub.agoda_server.stay.domain.Room;
 import efub.agoda_server.stay.domain.Stay;
 import efub.agoda_server.stay.domain.StayImage;
+import efub.agoda_server.stay.dto.request.StaySearchRequest;
 import efub.agoda_server.stay.dto.response.StayListResponse;
 import efub.agoda_server.stay.dto.response.StayResponse;
 import efub.agoda_server.stay.dto.summary.StaySummary;
@@ -33,20 +34,20 @@ public class StayService {
     private final StayImageRepository stayImageRepository;
 
     @Transactional(readOnly = true)
-    public StayListResponse getAllStays(String city, int minPrice, int maxPrice, LocalDate checkIn, LocalDate checkOut, int page) {
-        validateCheckInOutDate(checkIn, checkOut);
+    public StayListResponse getAllStays(StaySearchRequest request) {
+        validateCheckInOutDate(request.getCheckIn(), request.getCheckOut());
 
-        Pageable pageable = PageRequest.of(page, 8);    //페이지당 데이터 수 8개 고정
-        Page<Stay> stays = stayRepository.findBySalePriceBetweenAndAddressContaining(minPrice, maxPrice, city, pageable);
+        Pageable pageable = PageRequest.of(request.getPage(), 8);    //페이지당 데이터 수 8개 고정
+        Page<Stay> stays = stayRepository.findBySalePriceBetweenAndAddressContaining(request.getMinPrice(), request.getMaxPrice(), request.getCity(), pageable);
 
-        int totalDays = (int) ChronoUnit.DAYS.between(checkIn, checkOut);   //총 숙박일
+        int totalDays = (int) ChronoUnit.DAYS.between(request.getCheckIn(), request.getCheckOut());   //총 숙박일
         List<StaySummary> staySummaries = stays.getContent().stream()
                 .map(stay -> {
                     return StaySummary.from(stay, totalDays);
                 })
                 .collect(Collectors.toList());
 
-        return StayListResponse.from(city, checkIn, checkOut, staySummaries);
+        return StayListResponse.from(request.getCity(), request.getCheckIn(), request.getCheckOut(), staySummaries);
     }
 
     @Transactional(readOnly = true)
