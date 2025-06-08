@@ -40,14 +40,9 @@ public class StayService {
         Pageable pageable = PageRequest.of(request.getPage(), 8);    //페이지당 데이터 수 8개 고정
         Page<Stay> stays = stayRepository.findBySalePriceBetweenAndAddressContaining(request.getMinPrice(), request.getMaxPrice(), request.getCity(), pageable);
 
-        int totalDays = (int) ChronoUnit.DAYS.between(request.getCheckIn(), request.getCheckOut());   //총 숙박일
-        List<StaySummary> staySummaries = stays.getContent().stream()
-                .map(stay -> {
-                    return StaySummary.from(stay, totalDays);
-                })
-                .collect(Collectors.toList());
+        int totalDays = (int) ChronoUnit.DAYS.between(request.getCheckIn(), request.getCheckOut()); //총 숙박일
 
-        return StayListResponse.from(request.getCity(), request.getCheckIn(), request.getCheckOut(), staySummaries);
+        return StayListResponse.from(request, stays, totalDays);
     }
 
     @Transactional(readOnly = true)
