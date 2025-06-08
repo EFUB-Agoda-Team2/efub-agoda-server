@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class StayReviewSummary {
     private String reviewer;
+    private String reviewerImg;
     private double score;
     private String reviewText;
     private LocalDate createdAt;
@@ -23,6 +24,7 @@ public class StayReviewSummary {
     public static StayReviewSummary from(Review review, List<String> reviewImgUrls) {
         return StayReviewSummary.builder()
                 .reviewer(review.getUser().getUsername())
+                .reviewerImg(review.getUser().getProfileImg())
                 .score(calculateTotalRating(review))
                 .reviewText(review.getText())
                 .createdAt(review.getCreatedAt().toLocalDate())
